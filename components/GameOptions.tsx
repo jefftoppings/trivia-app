@@ -1,15 +1,16 @@
 import React from "react";
-import { Button, Text, StyleSheet, View, TextInput } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import Dropdown from "react-native-input-select";
 
-export default function Game({ navigation }) {
+export default function GameOptions({ navigation }) {
   const [numQuestions, setNumQuestions] = React.useState(10);
   const [category, setCategory] = React.useState(0);
+  const [difficulty, setDifficulty] = React.useState("easy");
 
   return (
     <View style={styles.container}>
       <Dropdown
-        label="How many questions?"
+        label="Number of questions"
         options={numQuestionsOptions}
         optionLabel={"name"}
         optionValue={"code"}
@@ -23,7 +24,8 @@ export default function Game({ navigation }) {
         }}
       />
       <Dropdown
-        label="Choose a category"
+        label="Category"
+        placeholder=""
         options={categoryOptions}
         optionLabel={"name"}
         optionValue={"value"}
@@ -35,6 +37,26 @@ export default function Game({ navigation }) {
           fontSize: 16,
           fontWeight: "500",
         }}
+      />
+      <Dropdown
+        label="Difficulty"
+        placeholder=""
+        options={difficultyOptions}
+        optionLabel={"name"}
+        optionValue={"value"}
+        selectedValue={difficulty}
+        onValueChange={(v) => setDifficulty(v)}
+        primaryColor={"#384061"}
+        labelStyle={{
+          color: "#384061",
+          fontSize: 16,
+          fontWeight: "500",
+        }}
+      />
+      <Button
+        title="Start"
+        onPress={() => navigation.navigate("Game")}
+        color={"#384061"}
       />
     </View>
   );
@@ -90,3 +112,9 @@ const categoryOptions = Array.from(categoryMap, ([name, value]) => ({
   name,
   value,
 }));
+
+const difficultyOptions = [
+  { name: "Easy", value: "easy" },
+  { name: "Medium", value: "medium" },
+  { name: "Hard", value: "hard" },
+];

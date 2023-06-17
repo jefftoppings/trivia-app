@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home";
-import Game from "./components/Game";
+import GameOptions from "./components/GameOptions";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,10 +25,10 @@ export default function App() {
           }}
         />
         <Stack.Screen
-          name="Game"
-          component={Game}
+          name="Game Options"
+          component={GameOptions}
           options={{
-            title: "GAME TIME",
+            title: "Game Options",
             headerStyle: {
               backgroundColor: "#384061",
             },
