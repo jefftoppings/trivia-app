@@ -1,6 +1,12 @@
 import React from "react";
 import { useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface ApiQuestion {
   category: string;
@@ -19,15 +25,13 @@ interface Question {
 interface GameInfo {
   questions: Question[];
   totalQuestions: number;
-  progress: {
-    correct: number;
-    questionsAsked: number;
-  };
 }
 
 export default function Game({ route, navigation }) {
   const [isLoading, setLoading] = React.useState(false);
   const [gameInfo, setGameInfo] = React.useState<GameInfo>(null);
+  const [correct, setCorrect] = React.useState<number>(null);
+  const [progressIndex, setProgressIndex] = React.useState<number>(null);
 
   useEffect(() => {
     const amount = route?.params?.numQuestions;
@@ -48,7 +52,7 @@ export default function Game({ route, navigation }) {
           ? apiQuestion.incorrect_answers.concat(apiQuestion.correct_answer)
           : ["True", "False"];
       return {
-        question: apiQuestion.question,
+        question: decodeHtmlCharCodesInString(apiQuestion.question),
         options: shuffleArray(options),
         correctOption: apiQuestion.correct_answer,
       };
@@ -56,13 +60,11 @@ export default function Game({ route, navigation }) {
     const gameInfo: GameInfo = {
       questions,
       totalQuestions: questions.length,
-      progress: {
-        correct: 0,
-        questionsAsked: 0,
-      },
     };
     console.log({ gameInfo });
     setGameInfo(gameInfo);
+    setCorrect(0);
+    setProgressIndex(0);
   }
 
   function shuffleArray<T>(arr: T[]): T[] {
@@ -72,9 +74,46 @@ export default function Game({ route, navigation }) {
       .map(({ value }) => value);
   }
 
+  /**
+   * fixes some issues from API responses
+   */
+  function decodeHtmlCharCodesInString(val: string): string {
+    return val.replaceAll("&quot;", '"');
+  }
+
+  const actualGame = (
+    <View>
+      <Text
+        style={{
+          fontSize: 16,
+          paddingTop: 8,
+          paddingBottom: 8,
+        }}
+      >
+        {gameInfo?.totalQuestions
+          ? ["Question", progressIndex + 1, "of", gameInfo.totalQuestions].join(
+              " "
+            )
+          : ""}
+      </Text>
+      <Text>{gameInfo?.questions?.[progressIndex]?.question || ""}</Text>
+      {gameInfo?.questions?.[progressIndex]?.options?.map((prop, index) => {
+        return (
+          <TouchableOpacity key={index} style={styles.button}>
+            <Text style={{ color: "white" }}>{prop}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      {isLoading ? <ActivityIndicator /> : <Text>Game works!</Text>}
+      {isLoading || !gameInfo?.totalQuestions ? (
+        <ActivityIndicator />
+      ) : (
+        actualGame
+      )}
     </View>
   );
 }
@@ -86,5 +125,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 16,
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: "#384061",
+    borderRadius: 6,
+    padding: 16,
+    margin: 16,
   },
 });
