@@ -67,7 +67,6 @@ export default function Game({ route, navigation }) {
       questions,
       totalQuestions: questions.length,
     };
-    console.log({ gameInfo });
     setGameInfo(gameInfo);
     setNumCorrect(0);
     setProgressIndex(0);
@@ -180,9 +179,9 @@ export default function Game({ route, navigation }) {
           : nextQuestionTemplate}
       </View>
     ) : (
-      <View>
-        <Text>Final Results</Text>
-        <Text>
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ fontWeight: "bold", fontSize: 24 }}>Final Results</Text>
+        <Text style={{ marginBottom: 24, fontSize: 18 }}>
           You got {Math.round((numCorrect / gameInfo.totalQuestions) * 100)}%!
         </Text>
         <Button
