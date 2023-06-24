@@ -5,7 +5,7 @@ export default function Home({ navigation }) {
     <View style={styles.container}>
       <Button
         title="New Game"
-        onPress={() => navigation.navigate("Game")}
+        onPress={() => navigation.navigate("Game Options")}
         color={"#384061"}
       />
     </View>
